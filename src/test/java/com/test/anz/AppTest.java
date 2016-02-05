@@ -10,6 +10,7 @@ import junit.framework.TestSuite;
 public class AppTest 
     extends TestCase
 {
+	private App rpnApp = new App();
     /**
      * Create the test case
      *
@@ -34,5 +35,26 @@ public class AppTest
     public void testApp()
     {
         assertTrue( true );
+    }
+    
+    public void testIsOperand() {
+    	String pattern = "[-+*/]";
+    	assertFalse("111".matches(pattern));
+    	assertFalse("+-".matches(pattern));
+    	assertFalse("".matches(pattern));
+    	assertFalse(" ".matches(pattern));
+    	assertFalse("sdf".matches(pattern));
+    	assertTrue("+".matches(pattern));
+    	assertTrue("-".matches(pattern));
+    	assertTrue("/".matches(pattern));
+    	assertTrue("*".matches(pattern));
+    	
+    }
+    
+    public void testIsNumber() {
+    	String pattern = "\\d+";
+    	assertTrue("111".matches(pattern));
+    	assertFalse("1a1".matches(pattern));
+    	assertTrue("1.11111111".matches(pattern)); //???? GOT TO FIX THIS PATTERN 
     }
 }
