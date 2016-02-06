@@ -127,12 +127,14 @@ public class AppTest
     	assertTrue(rpnApp.stack.size() == 0);
     	
     	completeList.clear();
+    	rpnApp.stack.clear();
     	inputList = createSampleInputList("1", "2", "+", "undo", "*", "undo");
     	completeList.addAll(inputList);
     	rpnApp.createStack(completeList, 0);
     	assertTrue(rpnApp.stack.size() == 2);
     	
     	completeList.clear();
+    	rpnApp.stack.clear();
     	inputList = createSampleInputList("1", "2", "*", "undo", "3", "+", "undo");
     	completeList.addAll(inputList);
     	rpnApp.createStack(completeList, 0);
