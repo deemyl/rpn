@@ -2,6 +2,7 @@ package com.test.anz;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EmptyStackException;
@@ -128,6 +129,7 @@ public class App {
 											// find two numbers before this
 											// operation
 			if (i >= 2) {
+				boolean donePrevVal = false;		
 				String op1 = inputList.get(i - 1);
 				String op2 = inputList.get(i - 2);
 				if (isNumber(op1) || isNumber(op2)) {
@@ -135,8 +137,9 @@ public class App {
 				}
 				if (!isNumber(op1)) {
 					handleUndoOperation(inputList, i - 1, pointerPos);
+					donePrevVal = true;					//this is a pointer to check if prevVal has looked at and operation handled
 				} 
-				if(!isNumber(op2)) {
+				if(!isNumber(op2) && !donePrevVal) {		
 					handleUndoOperation(inputList, i - 2, pointerPos);
 				} 
 				if (isNumber(op2)) {
@@ -150,22 +153,19 @@ public class App {
 				printIncorrectParameterMsg(currVal, pointerPos);
 				return 0;
 			}
-		} else if (isSquareRootCommand(currVal)) { // if it is sqrt, then only
-													// pop the sqrt result and
+		} else if (isSquareRootCommand(currVal)) { 
 			if (peek() == null) {
 				printIncorrectParameterMsg(currVal, pointerPos);
 				return 0;
 			} else {										
-				String op1 = inputList.get(i - 1);
-				// TODO need to test this
-				if (isNumber(op1)) {
+				String op1 = inputList.get(i - 1);			
+				if (isNumber(op1)) {						// if it is number, then only pop the sqrt result and and push the orig
 					stack.pop();
 					stack.push(op1);
 				} else {
 					if (handleUndoOperation(inputList, i - 1, pointerPos) == 1) {
 						stack.push(squareroot(stack.pop()));
 					}
-				
 				}
 			}
 		} else if (isUndoCommand(currVal)) { // if prev is also undo, then peek
@@ -246,23 +246,28 @@ public class App {
 	}
 
 	protected String squareroot(String val) {
-		return (new BigDecimal(Math.sqrt(convertString(val).doubleValue()), new MathContext(15))).toString();
+		return convertBigDecimal(new BigDecimal(Math.sqrt(convertString(val).doubleValue()), new MathContext(15)));
 	}
 
 	protected BigDecimal convertString(String val) {
 		return new BigDecimal(val, new MathContext(15));
 	}
 
+	protected String convertBigDecimal(BigDecimal decimal) {		//TODO Need to test this
+		//return decimal.setScale(10, RoundingMode.CEILING).toString();		
+		return decimal.toString();
+	}
+	
 	protected String doOperation(String val1, String val2, String operation) {
 		switch (operation) {
 		case "+":
-			return convertString(val1).add(convertString(val2)).toString();
+			return convertBigDecimal(convertString(val1).add(convertString(val2)));
 		case "-":
-			return convertString(val1).subtract(convertString(val2)).toString();
+			return convertBigDecimal(convertString(val1).subtract(convertString(val2)));
 		case "/":
-			return convertString(val1).divide(convertString(val2)).toString();
+			return convertBigDecimal(convertString(val1).divide(convertString(val2)));
 		case "*":
-			return convertString(val1).multiply(convertString(val2)).toString();
+			return convertBigDecimal(convertString(val1).multiply(convertString(val2)));
 
 		default:
 			return null;

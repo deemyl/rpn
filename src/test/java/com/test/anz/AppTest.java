@@ -105,6 +105,8 @@ public class AppTest
     	assertEquals(new BigDecimal("5.66666666666667"), rpnApp.convertString(testStr));		//testing the precision upto 15
     }
     
+    //TODO test the precision
+    
     public void testCreateStack() {
     	List<String> completeList = new ArrayList<String>();
     	List<String> inputList = createSampleInputList("32", "20", "-");
@@ -126,13 +128,12 @@ public class AppTest
     	rpnApp.createStack(completeList, 4);
     	assertTrue(rpnApp.stack.size() == 0);
     	
-    	//TODO NEED TO FIX THIS
-    	/*completeList.clear(); 
+    	completeList.clear(); 
     	rpnApp.stack.clear();
     	inputList = createSampleInputList("1", "2", "+", "undo", "*", "undo");
     	completeList.addAll(inputList);
     	rpnApp.createStack(completeList, 0);
-    	assertTrue(rpnApp.stack.size() == 2);*/
+    	assertTrue(rpnApp.stack.size() == 2);
     	
     	completeList.clear();
     	rpnApp.stack.clear();
@@ -140,29 +141,26 @@ public class AppTest
     	completeList.addAll(inputList);
     	rpnApp.createStack(completeList, 0);
     	assertTrue(rpnApp.stack.size() == 3);
-    	assertTrue(rpnApp.stack.get(0) == "1");
-    	assertTrue(rpnApp.stack.get(1) == "2");
-    	assertTrue(rpnApp.stack.get(2) == "3");
+    	assertTrue(rpnApp.stack.get(0).equals("1"));
+    	assertTrue(rpnApp.stack.get(1).equals("2"));
+    	assertTrue(rpnApp.stack.get(2).equals("3"));
     	
-    	/* TODO Need to fix this
     	completeList.clear();
     	rpnApp.stack.clear();
     	inputList = createSampleInputList("1", "4", "*", "undo", "sqrt", "+", "undo");
     	completeList.addAll(inputList);
     	rpnApp.createStack(completeList, 0);
     	assertTrue(rpnApp.stack.size() == 2);
-    	assertTrue(rpnApp.stack.get(0) == "1");
-    	assertTrue(rpnApp.stack.get(1) == "2");
-    	*/
+    	assertTrue(rpnApp.stack.get(0).equals("1"));
+    	assertTrue(rpnApp.stack.get(1).equals("2"));
     	
-    	//TODO more test for clear in conjection with other commands.
     	completeList.clear();
     	rpnApp.stack.clear();
     	inputList = createSampleInputList("1", "2", "*", "undo", "undo");
     	completeList.addAll(inputList);
     	rpnApp.createStack(completeList, 0);
     	assertTrue(rpnApp.stack.size() == 1);
-    	assertTrue(rpnApp.stack.get(0) == "1");
+    	assertTrue(rpnApp.stack.get(0).equals("1"));
     	
     }
     
