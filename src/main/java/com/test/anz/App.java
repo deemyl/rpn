@@ -121,21 +121,24 @@ public class App {
 
 	protected int handleUndoOperation(List<String> inputList, int i, int pointerPos) {
 		String currVal = inputList.get(i);
-		String prevVal = inputList.get(i - 1);
-		if (isNumber(prevVal)) { // if prev is number, then just pop it
+		//String prevVal = inputList.get(i - 1);
+		if (isNumber(currVal)) { // if prev is number, then just pop it
 			stack.pop();
-		} else if (isOperand(prevVal)) { // if it is some operation, u need to
+		} else if (isOperand(currVal)) { // if it is some operation, u need to
 											// find two numbers before this
 											// operation
-			if (i >= 3) {
-				String op1 = inputList.get(i - 2);
-				String op2 = inputList.get(i - 3);
+			if (i >= 2) {
+				String op1 = inputList.get(i - 1);
+				String op2 = inputList.get(i - 2);
 				if (isNumber(op1) || isNumber(op2)) {
 					stack.pop();
 				}
-				if (!isNumber(op1) || !isNumber(op2)) {
+				if (!isNumber(op1)) {
+					handleUndoOperation(inputList, i - 1, pointerPos);
+				} 
+				if(!isNumber(op2)) {
 					handleUndoOperation(inputList, i - 2, pointerPos);
-				}
+				} 
 				if (isNumber(op2)) {
 					stack.push(op2);
 				}
@@ -147,25 +150,37 @@ public class App {
 				printIncorrectParameterMsg(currVal, pointerPos);
 				return 0;
 			}
-		} else if (isSquareRootCommand(prevVal)) { // if it is sqrt, then only
+		} else if (isSquareRootCommand(currVal)) { // if it is sqrt, then only
 													// pop the sqrt result and
-													// then put the orig val
-			String op1 = inputList.get(i - 2);
-			// TODO need to test this
-			if (isNumber(op1)) {
-				stack.pop();
-				stack.push(op1);
-			} else {
-				handleUndoOperation(inputList, i - 2, pointerPos);
+			if (peek() == null) {
+				printIncorrectParameterMsg(currVal, pointerPos);
+				return 0;
+			} else {										
+				String op1 = inputList.get(i - 1);
+				// TODO need to test this
+				if (isNumber(op1)) {
+					stack.pop();
+					stack.push(op1);
+				} else {
+					if (handleUndoOperation(inputList, i - 1, pointerPos) == 1) {
+						stack.push(squareroot(stack.pop()));
+					}
+				
+				}
 			}
-		} else if (isUndoCommand(prevVal)) { // if prev is also undo, then peek
+		} else if (isUndoCommand(currVal)) { // if prev is also undo, then peek
 												// to see if a number exists in
 												// the stack
 			if (peek() == null) {
 				printIncorrectParameterMsg(currVal, pointerPos);
 				return 0;
 			} else {
-				handleUndoOperation(inputList, i - 1, pointerPos);
+				String op1 = inputList.get(i - 1);
+				if (isUndoCommand(op1)) {
+					stack.pop();
+				} else {
+					handleUndoOperation(inputList, i - 1, pointerPos);
+				}
 			}
 		}
 		return 1;
